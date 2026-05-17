@@ -23,7 +23,7 @@ import Link from "next/link";
 import type { ComponentType, SVGProps } from "react";
 import { works } from "./data/products";
 
-const navItems = ["Início", "Sobre", "Produtos", "Como funciona", "Avaliações", "Contato"];
+const navItems = ["Início", "Sobre", "Produtos", "Como funciona", "Contato"];
 type IconComponent = ComponentType<{ className?: string }> | ComponentType<SVGProps<SVGSVGElement>>;
 
 const highlights: Array<{ title: string; text: string; icon: IconComponent }> = [
@@ -40,8 +40,8 @@ const strengths = [
   },
   {
     icon: Palette,
-    title: "Diversos materiais",
-    text: "Trabalhamos com PLA, PETG, TPU e PVA em diversas cores.",
+    title: "Materiais de qualidade",
+    text: "Trabalhamos com PETG ou PLA em diversas cores.",
   },
   {
     icon: Wand2,
@@ -63,7 +63,7 @@ const footerBenefits: Array<{ icon: LucideIcon; title: string; text: string }> =
   { icon: PackageCheck, title: "Impressão 3D de qualidade", text: "Materiais resistentes e acabamento premium" },
   { icon: Truck, title: "Entrega rápida e segura", text: "Para todo o Brasil" },
   { icon: Headphones, title: "Atendimento humano", text: "Fale diretamente com a gente" },
-  { icon: ShieldCheck, title: "Pagamento seguro", text: "Pix, Cartao e Boleto" },
+  { icon: ShieldCheck, title: "Pagamento seguro", text: "Pix, Cartão e Boleto" },
 ];
 
 function WhatsAppIcon({ className = "h-5 w-5" }: { className?: string }) {
@@ -159,12 +159,12 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="relative z-10 min-h-[480px] overflow-hidden rounded-lg lg:min-h-[780px]">
+        <div className="relative z-10 min-h-[480px] lg:min-h-[780px]">
           <Image
             src="/assets/KyriosMainImage.webp"
             alt="Produtos impressos em 3D da Kyrios"
             fill
-            className="scale-105 object-contain object-[100%_12%] lg:scale-110 lg:object-[96%_14%]"
+            className="object-contain object-[center_top] lg:object-[right_top]"
             priority
             sizes="(max-width: 1280px) 100vw, 55vw"
             unoptimized

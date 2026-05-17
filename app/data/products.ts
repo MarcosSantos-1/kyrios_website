@@ -23,9 +23,9 @@ export const works: Product[] = [
     category: "Colecionáveis",
     features: ["Alta definição de detalhes", "Acabamento manual opcional", "Diversos tamanhos disponíveis"],
     specifications: {
-      material: "Resina ou PLA Premium",
+      material: "PETG ou PLA Premium",
       dimensions: "Personalizável (até 30cm)",
-      colors: ["Bronze", "Mármore", "Cinza", "Pintura Personalizada"]
+      colors: ["Diversas Cores"]
     }
   },
   {
@@ -37,8 +37,8 @@ export const works: Product[] = [
     category: "Acessórios",
     features: ["Leve e resistente", "Design exclusivo", "Ótimo para brindes e presentes"],
     specifications: {
-      material: "PETG de alta resistência",
-      colors: ["Diversas cores disponíveis"]
+      material: "PETG ou PLA Premium",
+      colors: ["Diversas Cores"]
     }
   },
   {
@@ -50,8 +50,8 @@ export const works: Product[] = [
     category: "Acessórios",
     features: ["Cores vibrantes", "Material durável", "Temas variados"],
     specifications: {
-      material: "PLA Silk / PETG",
-      colors: ["Multicolorido"]
+      material: "PETG ou PLA Premium",
+      colors: ["Diversas Cores"]
     }
   },
   {
@@ -63,9 +63,9 @@ export const works: Product[] = [
     category: "Corporativo",
     features: ["Efeito 3D real", "Fácil instalação", "Durabilidade"],
     specifications: {
-      material: "PLA / PETG",
+      material: "PETG ou PLA Premium",
       dimensions: "Sob consulta",
-      colors: ["Cores da sua marca"]
+      colors: ["Diversas Cores"]
     }
   },
   {
@@ -77,8 +77,8 @@ export const works: Product[] = [
     category: "Utilidades",
     features: ["Design ergonômico", "Estabilidade", "Organização"],
     specifications: {
-      material: "PETG (mais resistente)",
-      colors: ["Preto", "Branco", "Cinza Espacial"]
+      material: "PETG ou PLA Premium",
+      colors: ["Diversas Cores"]
     }
   },
   {
@@ -90,8 +90,8 @@ export const works: Product[] = [
     category: "Casa",
     features: ["Design exclusivo", "Leveza", "Estilo moderno"],
     specifications: {
-      material: "PLA Wood / Silk",
-      colors: ["Madeira", "Cobre", "Ouro", "Prata"]
+      material: "PETG ou PLA Premium",
+      colors: ["Diversas Cores"]
     }
   }
 ];
