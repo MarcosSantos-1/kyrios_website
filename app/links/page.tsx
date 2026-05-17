@@ -6,8 +6,10 @@ import { Instagram, MessageCircle, Globe, ArrowRight } from "lucide-react";
 
 export default function LinksPage() {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const darkModeMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     setIsDarkMode(darkModeMediaQuery.matches);
 
@@ -43,44 +45,44 @@ export default function LinksPage() {
     },
   ];
 
+  if (!mounted) return <div className="min-h-screen bg-black" />;
+
+  const logoSrc = isDarkMode ? "/assets/kyrios-logo-white.svg" : "/assets/kyrios-logo.svg";
+
   return (
     <main className="relative min-h-screen w-full overflow-hidden flex flex-col items-center justify-center px-6 py-12">
       {/* Backgrounds Fixos */}
       <div className="fixed inset-0 z-0">
-        {/* Mobile Background */}
-        <div className="block md:hidden relative w-full h-full">
-          <Image
-            src="/link/linketree.png"
-            alt="Background"
-            fill
-            className="object-cover"
-            priority
-          />
-        </div>
-        {/* Desktop Background */}
-        <div className="hidden md:block relative w-full h-full">
-          <Image
-            src="/link/linketree-desktop.png"
-            alt="Background Desktop"
-            fill
-            className="object-cover"
-            priority
-          />
-        </div>
+        <Image
+          src="/link/linketree.png"
+          alt="Background"
+          fill
+          className="object-cover md:hidden"
+          priority
+          quality={60}
+        />
+        <Image
+          src="/link/linketree-desktop.png"
+          alt="Background Desktop"
+          fill
+          className="object-cover hidden md:block"
+          priority
+          quality={60}
+        />
         {/* Overlay para legibilidade */}
-        <div className="absolute inset-0 bg-black/20" />
+        <div className="absolute inset-0 bg-black/30" />
       </div>
 
       {/* Conteúdo */}
       <div className="relative z-10 w-full max-w-[400px] flex flex-col items-center">
         {/* Logo */}
-        <div className="mb-12 transition-all duration-500 transform hover:scale-105 drop-shadow-2xl">
+        <div className="mb-10 transition-all duration-500 transform hover:scale-105 drop-shadow-2xl">
           <Image
-            src={isDarkMode ? "/assets/kyrios-logo-white.svg" : "/assets/kyrios-logo.svg"}
+            src={logoSrc}
             alt="Kyrios Design"
-            width={720}
-            height={240}
-            className="h-72 w-auto"
+            width={320}
+            height={100}
+            className="h-32 w-auto md:h-40"
             priority
           />
         </div>
