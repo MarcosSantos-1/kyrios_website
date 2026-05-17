@@ -74,13 +74,13 @@ export default function LinksPage() {
       {/* Conteúdo */}
       <div className="relative z-10 w-full max-w-[400px] flex flex-col items-center">
         {/* Logo */}
-        <div className="mb-8 transition-all duration-500">
+        <div className="mb-12 transition-all duration-500 transform hover:scale-105 drop-shadow-2xl">
           <Image
             src={isDarkMode ? "/assets/kyrios-logo-white.svg" : "/assets/kyrios-logo.svg"}
             alt="Kyrios Design"
-            width={180}
-            height={60}
-            className="h-20 w-auto"
+            width={720}
+            height={240}
+            className="h-72 w-auto"
             priority
           />
         </div>
