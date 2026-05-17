@@ -161,12 +161,13 @@ export default function Home() {
 
         <div className="relative z-10 min-h-[480px] overflow-hidden rounded-lg lg:min-h-[780px]">
           <Image
-            src="/assets/KyriosMainImage.svg"
+            src="/assets/KyriosMainImage.webp"
             alt="Produtos impressos em 3D da Kyrios"
             fill
             className="scale-105 object-contain object-[100%_12%] lg:scale-110 lg:object-[96%_14%]"
             priority
             sizes="(max-width: 1280px) 100vw, 55vw"
+            unoptimized
           />
         </div>
       </section>
@@ -234,7 +235,7 @@ export default function Home() {
 
         <section id="cta-whatsapp" aria-label="Chamada para ação" className="mt-12 lg:mt-14">
           <div
-            className="isolate mx-auto flex min-h-[260px] max-w-4xl items-center justify-center bg-[url('/assets/HeroButtonBackground.png')] bg-contain bg-center bg-no-repeat px-4 py-10 md:min-h-[300px] md:py-12 lg:min-h-[400px] lg:max-w-6xl lg:py-16 xl:min-h-[460px] xl:max-w-7xl"
+            className="isolate mx-auto flex min-h-[260px] max-w-4xl items-center justify-center bg-[url('/assets/HeroButtonBackground.webp')] bg-contain bg-center bg-no-repeat px-4 py-10 md:min-h-[300px] md:py-12 lg:min-h-[400px] lg:max-w-6xl lg:py-16 xl:min-h-[460px] xl:max-w-7xl"
           >
             <a
               href="https://wa.me/5511993796258"
@@ -335,17 +336,26 @@ export default function Home() {
 
 function LogoMark() {
   return (
-    <span className="flex items-center">
-      <img src="/assets/kyrios-logo.svg" alt="Kyrios Impressão 3D" className="h-16 w-auto md:h-20" width={180} height={48} />
-    </span>
+    <Image
+      src="/assets/kyrios-logo.png"
+      alt="Kyrios Impressão 3D"
+      width={220}
+      height={60}
+      className="h-14 w-auto md:h-16"
+      priority
+    />
   );
 }
 
 function LogoMark2() {
   return (
-    <span className="flex items-center">
-      <img src="/assets/kyrios-logo-white.svg" alt="Kyrios Impressão 3D" className="flex items-center justify-center h-20 w-auto md:h-24" width={180} height={48} />
-    </span>
+    <Image
+      src="/assets/kyrios-logo.png"
+      alt="Kyrios Impressão 3D"
+      width={220}
+      height={60}
+      className="h-16 w-auto md:h-20 brightness-0 invert"
+    />
   );
 }
 function FooterList({ title, items }: { title: string; items: string[] }) {

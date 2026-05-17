@@ -19,7 +19,7 @@ export const works: Product[] = [
     title: "Bustos",
     description: "Réplicas detalhadas e personalizadas.",
     fullDescription: "Nossos bustos são impressos com a mais alta resolução para capturar cada detalhe da face e textura. Perfeitos para colecionadores, presentes exclusivos ou decoração de alto nível.",
-    image: "/images/1.png",
+    image: "/images/1.webp",
     category: "Colecionáveis",
     features: ["Alta definição de detalhes", "Acabamento manual opcional", "Diversos tamanhos disponíveis"],
     specifications: {
@@ -33,7 +33,7 @@ export const works: Product[] = [
     title: "Itens Personalizados",
     description: "Sua marca ou ideia sempre com você.",
     fullDescription: "Itens Personalizados e resistentes, ideais presentes ou decoração. Podemos criar qualquer formato a partir de um modelo ou ideia sua.",
-    image: "/images/2.1.png",
+    image: "/images/2.1.webp",
     category: "Acessórios",
     features: ["Leve e resistente", "Design exclusivo", "Ótimo para brindes e presentes"],
     specifications: {
@@ -46,7 +46,7 @@ export const works: Product[] = [
     title: "Chaveiros Temáticos",
     description: "Personagens e temas variados.",
     fullDescription: "Coleção de chaveiros inspirados em filmes, jogos e cultura pop, também personalizáveis. Feitos com cores vibrantes e material durável.",
-    image: "/images/3.png",
+    image: "/images/3.webp",
     category: "Acessórios",
     features: ["Cores vibrantes", "Material durável", "Temas variados"],
     specifications: {
@@ -59,7 +59,7 @@ export const works: Product[] = [
     title: "Logos e Placas",
     description: "Identidade visual em 3D para seu negócio.",
     fullDescription: "Transforme seu logo em uma peça física de destaque. Placas de mesa, parede ou sinalização interna com acabamento profissional.",
-    image: "/images/8.png",
+    image: "/images/8.webp",
     category: "Corporativo",
     features: ["Efeito 3D real", "Fácil instalação", "Durabilidade"],
     specifications: {
@@ -73,7 +73,7 @@ export const works: Product[] = [
     title: "Suportes",
     description: "Organização e funcionalidade com design.",
     fullDescription: "Suportes para fones, controles, celulares e organização de mesa. Unimos utilidade com a estética da impressão 3D.",
-    image: "/images/7.png",
+    image: "/images/7.webp",
     category: "Utilidades",
     features: ["Design ergonômico", "Estabilidade", "Organização"],
     specifications: {
@@ -86,7 +86,7 @@ export const works: Product[] = [
     title: "Decoração",
     description: "Peças únicas para transformar ambientes.",
     fullDescription: "Vasos, esculturas geométricas e itens decorativos que só a impressão 3D consegue criar. Design paramétrico e moderno.",
-    image: "/images/6.1.png",
+    image: "/images/6.1.webp",
     category: "Casa",
     features: ["Design exclusivo", "Leveza", "Estilo moderno"],
     specifications: {
