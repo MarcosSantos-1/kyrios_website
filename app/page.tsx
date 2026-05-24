@@ -1,24 +1,25 @@
 import {
   ArrowRight,
   ArrowUpRight,
+  Award,
   Box,
+  Briefcase,
   Check,
+  Clock,
   Cuboid,
   ExternalLink,
-  Headphones,
+  Gift,
   Instagram,
   Layers,
-  Mail,
-  MapPin,
   MessageSquare,
-  PackageCheck,
+  Package,
   Palette,
   Printer,
   Quote,
   ShieldCheck,
-  ShoppingBag,
   Sparkles,
   Star,
+  Tag,
   Truck,
   Wand2,
   Zap,
@@ -27,11 +28,19 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import type { ComponentType, SVGProps } from "react";
-import { works } from "./data/products";
+import { formatPrice, works } from "./data/products";
 import { CountUp, FAQ, Reveal, StickyMobileCTA } from "./components/Interactive";
+import {
+  SiteFooter,
+  SiteHeader,
+  WHATSAPP_CORPORATE,
+  WHATSAPP_URL,
+  WhatsAppIcon,
+} from "./components/SiteChrome";
 
-const navItems = ["Início", "Sobre", "Como funciona", "Produtos", "Modelos 3D", "Contato"];
-type IconComponent = ComponentType<{ className?: string }> | ComponentType<SVGProps<SVGSVGElement>>;
+type IconComponent =
+  | ComponentType<{ className?: string }>
+  | ComponentType<SVGProps<SVGSVGElement>>;
 
 const highlights: Array<{ title: string; text: string; icon: IconComponent }> = [
   { title: "Alta qualidade", text: "Impressões precisas com ótimo acabamento", icon: Check },
@@ -57,6 +66,13 @@ const marqueeItems = [
   "PETG Premium", "PLA Premium", "Alta resolução", "Diversas cores",
   "Entrega 5–7 dias", "Personalização total", "Atendimento humano",
   "Modelos sob medida", "Impressão FDM", "Acabamento manual",
+];
+
+const corporateUseCases: Array<{ icon: LucideIcon; title: string; text: string }> = [
+  { icon: Gift, title: "Brindes & mimos", text: "Lembranças que ninguém joga fora. Personalizadas com a sua marca." },
+  { icon: Award, title: "Trofeús & placas", text: "Premiações, sinalização interna e logos em 3D pra recepção." },
+  { icon: Package, title: "Kits de evento", text: "Lançamentos, feiras, treinamentos — peças únicas, em lote." },
+  { icon: Briefcase, title: "Linha customizada", text: "Para sua loja, agência ou e-commerce: produção em escala, sob marca branca." },
 ];
 
 const testimonials = [
@@ -105,49 +121,22 @@ const faqItems = [
     q: "Como funciona o pagamento?",
     a: "Aceitamos Pix, cartão e boleto. Para pedidos personalizados, normalmente trabalhamos com uma reserva pra começar e o restante na finalização.",
   },
+  {
+    q: "Fazem pedidos em lote pra empresas?",
+    a: "Fazemos sim, e amamos esses projetos. Brindes, sinalização, mimos de evento, linhas customizadas com sua marca — temos desconto progressivo e briefing dedicado. Veja a seção Corporativo aqui em cima.",
+  },
 ];
 
 const avatars = ["MA", "JP", "LI", "BR", "CA"];
 
-const footerBenefits: Array<{ icon: LucideIcon; title: string; text: string }> = [
-  { icon: PackageCheck, title: "Impressão 3D de qualidade", text: "Materiais resistentes e acabamento premium" },
-  { icon: Truck, title: "Entrega rápida e segura", text: "Para todo o Brasil" },
-  { icon: Headphones, title: "Atendimento humano", text: "Fale diretamente com a gente" },
-  { icon: ShieldCheck, title: "Pagamento seguro", text: "Pix, Cartão e Boleto" },
-];
-
-function WhatsAppIcon({ className = "h-5 w-5" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" className={className} fill="currentColor">
-      <path d="M20.52 3.48A11.78 11.78 0 0 0 12.13 0C5.61 0 .3 5.31.3 11.83c0 2.08.54 4.12 1.58 5.91L.2 24l6.4-1.68a11.8 11.8 0 0 0 5.53 1.41h.01c6.52 0 11.83-5.31 11.83-11.83 0-3.16-1.23-6.13-3.45-8.42ZM12.14 21.73h-.01a9.82 9.82 0 0 1-5.01-1.37l-.36-.22-3.8 1 1.01-3.7-.24-.38a9.78 9.78 0 0 1-1.5-5.23c0-5.42 4.42-9.83 9.86-9.83 2.63 0 5.1 1.03 6.96 2.89a9.78 9.78 0 0 1 2.88 6.95c0 5.43-4.42 9.84-9.79 9.89Zm5.38-7.36c-.29-.15-1.74-.86-2.01-.96-.27-.1-.47-.15-.67.15-.19.29-.77.96-.94 1.15-.17.2-.35.22-.64.07-.29-.14-1.24-.46-2.36-1.46a8.8 8.8 0 0 1-1.63-2.02c-.17-.29-.02-.45.13-.6.13-.13.29-.35.44-.52.15-.17.2-.29.3-.49.1-.2.05-.37-.03-.52-.07-.14-.67-1.61-.91-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.29-1.03 1-1.03 2.44 0 1.45 1.06 2.84 1.2 3.04.15.2 2.08 3.17 5.03 4.45.7.3 1.25.48 1.68.62.71.22 1.35.19 1.86.12.57-.09 1.74-.71 1.99-1.39.24-.68.24-1.27.17-1.39-.07-.13-.27-.2-.56-.35Z" />
-    </svg>
-  );
-}
+// Featured product (editorial spotlight) + supporting cast
+const featuredProduct = works.find((p) => p.featured) ?? works[0];
+const supportingProducts = works.filter((p) => p.id !== featuredProduct.id);
 
 export default function Home() {
   return (
     <main className="overflow-hidden">
-      {/* HEADER */}
-      <header className="container-px sticky top-0 z-30 flex items-center justify-between py-3 backdrop-blur supports-[backdrop-filter]:bg-white/65 md:py-4">
-        <a href="#inicio" className="flex items-center gap-3">
-          <LogoMark />
-        </a>
-        <nav className="hidden items-center gap-7 text-sm font-semibold text-ink/90 lg:flex">
-          {navItems.map((item, index) => (
-            <a
-              key={item}
-              href={`#${item.toLowerCase().replaceAll(" ", "-").normalize("NFD").replace(/[̀-ͯ]/g, "")}`}
-              className={index === 0 ? "border-b border-teal pb-1 text-teal" : "relative transition hover:text-teal"}
-            >
-              {item}
-            </a>
-          ))}
-        </nav>
-        <a href="https://wa.me/5511993796258" className="hidden items-center gap-2 rounded-full bg-tealDeep px-5 py-3 text-sm font-bold text-white shadow-soft transition hover:bg-ink md:flex">
-          <WhatsAppIcon />
-          Fale no WhatsApp
-        </a>
-      </header>
+      <SiteHeader activeLabel="Início" />
 
       {/* HERO */}
       <section id="inicio" className="relative">
@@ -204,15 +193,15 @@ export default function Home() {
 
             <Reveal delay={4}>
               <div className="mt-8 flex flex-wrap gap-3">
-                <a href="https://wa.me/5511993796258" className="group relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-full bg-tealDeep px-8 py-5 text-sm font-bold text-white shadow-soft transition hover:bg-ink animate-pulse-subtle">
+                <a href={WHATSAPP_URL} className="group relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-full bg-tealDeep px-8 py-5 text-sm font-bold text-white shadow-soft transition hover:bg-ink animate-pulse-subtle">
                   <span className="absolute inset-0 h-full w-full -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent animate-laser" />
                   <WhatsAppIcon />
                   Solicitar orçamento
                   <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
                 </a>
-                <a href="#produtos" className="inline-flex items-center justify-center rounded-full border border-line bg-white/70 px-8 py-5 text-sm font-bold text-ink backdrop-blur transition hover:border-teal hover:text-teal">
-                  Ver produtos
-                </a>
+                <Link href="/produtos" className="inline-flex items-center justify-center rounded-full border border-line bg-white/70 px-8 py-5 text-sm font-bold text-ink backdrop-blur transition hover:border-teal hover:text-teal">
+                  Ver catálogo
+                </Link>
                 <a
                   href="https://shopee.com.br/kyrios3d"
                   target="_blank"
@@ -285,7 +274,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* SOBRE / POR QUE ESCOLHER */}
+      {/* SOBRE */}
       <section id="sobre" className="relative bg-tealDeep text-white">
         <div className="container-px relative z-10 pb-16 pt-14 md:pb-24 md:pt-20">
           <Reveal className="text-center">
@@ -395,7 +384,7 @@ export default function Home() {
                 Sua peça nascendo, <span className="italic text-tealBright">camada por camada</span>.
               </h2>
               <p className="mt-6 max-w-lg text-base leading-7 text-white/80 md:text-lg">
-                Toda peça que sai do ateliê passa por essa mesma cadência: precisão, atenção e zero pressa pra entregar bem feito.
+                Toda peça que sai da produção passa por essa mesma cadência: precisão, atenção e zero pressa pra entregar bem feito.
               </p>
 
               <ul className="mt-8 space-y-3 text-sm text-white/80">
@@ -414,7 +403,7 @@ export default function Home() {
               </ul>
 
               <div className="mt-9 flex flex-wrap gap-3">
-                <a href="https://wa.me/5511993796258?text=Olá!%20Vi%20o%20vídeo%20no%20site%20e%20quero%20fazer%20um%20orçamento." className="group inline-flex items-center justify-center gap-3 rounded-full bg-amber px-7 py-4 text-sm font-bold text-ink shadow-[0_18px_40px_rgba(232,163,61,0.35)] transition hover:bg-white">
+                <a href={`${WHATSAPP_URL}?text=Olá!%20Vi%20o%20vídeo%20no%20site%20e%20quero%20fazer%20um%20orçamento.`} className="group inline-flex items-center justify-center gap-3 rounded-full bg-amber px-7 py-4 text-sm font-bold text-ink shadow-[0_18px_40px_rgba(232,163,61,0.35)] transition hover:bg-white">
                   <WhatsAppIcon className="h-5 w-5" />
                   Quero a minha peça
                   <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
@@ -429,72 +418,94 @@ export default function Home() {
         </div>
       </section>
 
-      {/* PRODUTOS */}
-      <section id="produtos" className="container-px relative bg-[#f7faf9] py-20 md:py-28">
-        <div className="grid gap-12 lg:grid-cols-[320px_1fr]">
+      {/* PRODUTOS — EDITORIAL */}
+      <section id="produtos" className="relative bg-[#f7faf9] py-20 md:py-28">
+        <div className="container-px">
           <Reveal>
-            <span className="inline-flex items-center gap-2 rounded-full bg-teal/10 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-teal">
-              <Box className="h-3.5 w-3.5" />
-              Nossos trabalhos
-            </span>
-            <h2 className="mt-5 font-display text-5xl font-bold leading-[1.02] tracking-tight text-ink">
-              Ideias que <span className="italic text-tealDeep">ganham forma</span>.
-            </h2>
-            <p className="mt-5 text-lg leading-8 text-ink/70">
-              Cada projeto é impresso com precisão, atenção aos detalhes e paixão pelo que fazemos.
-            </p>
-            <a href="https://wa.me/5511993796258" className="mt-8 inline-flex items-center gap-3 rounded-full border border-teal/40 px-7 py-4 text-sm font-bold text-ink transition hover:bg-teal hover:text-white">
-              Quero um projeto único <ArrowRight className="h-4 w-4" />
-            </a>
-            <div className="mt-10 rounded-2xl border border-line bg-white p-5">
-              <p className="font-display text-3xl font-bold text-ink">
-                <CountUp end={500} suffix="+" /> projetos
-              </p>
-              <p className="mt-1 text-sm text-ink/60">entregues nos últimos meses</p>
+            <div className="flex flex-wrap items-end justify-between gap-6">
+              <div className="max-w-3xl">
+                <div className="flex items-center gap-3">
+                  <span className="inline-flex items-center gap-2 rounded-full bg-teal/10 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-teal">
+                    <Box className="h-3.5 w-3.5" />
+                    Vitrine editorial
+                  </span>
+                  <span className="hidden text-[11px] font-bold uppercase tracking-[0.18em] text-ink/40 sm:inline">
+                    Edição #01 · {new Date().toLocaleDateString("pt-BR", { month: "long", year: "numeric" })}
+                  </span>
+                </div>
+                <h2 className="mt-5 font-display text-5xl font-bold leading-[0.98] tracking-tight text-ink md:text-6xl lg:text-7xl">
+                  Esta semana, em <span className="italic text-tealDeep">destaque</span> —
+                </h2>
+                <p className="mt-5 max-w-xl text-base leading-7 text-ink/70 md:text-lg">
+                  Uma seleção curada do que está saindo da produção. Cada peça é prova de que detalhes não são detalhes.
+                </p>
+              </div>
+              <Link
+                href="/produtos"
+                className="group inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3.5 text-sm font-bold text-white transition hover:bg-tealDeep"
+              >
+                Catálogo completo
+                <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+              </Link>
             </div>
           </Reveal>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {works.map((work, i) => (
-              <Reveal key={work.id} delay={(((i % 3) + 1) as 1 | 2 | 3)}>
-                <Link href={`/produtos/${work.id}`}>
-                  <article className="tilt-card group h-full overflow-hidden rounded-2xl border border-line bg-white shadow-[0_10px_35px_rgba(18,59,60,0.06)]">
-                    <div className="relative aspect-[1.08] overflow-hidden bg-[#eef3f2]">
-                      <Image src={work.image} alt={work.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-ink/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                      <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-white/85 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-ink backdrop-blur">
-                        <Box className="h-3 w-3 text-teal" /> {work.category}
-                      </span>
-                      <div className="absolute bottom-4 left-4 right-4 translate-y-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                        <span className="inline-flex items-center gap-2 rounded-full bg-white/95 px-4 py-2 text-xs font-bold text-ink backdrop-blur-sm">
-                          Ver detalhes <ArrowRight className="h-3 w-3" />
-                        </span>
-                      </div>
-                    </div>
-                    <div className="p-5">
-                      <h3 className="font-display text-xl font-bold text-ink">{work.title}</h3>
-                      <p className="mt-2 text-sm text-ink/65 line-clamp-2">{work.description}</p>
-                      <div className="mt-4 flex items-center justify-between">
-                        <span className="inline-flex items-center gap-1.5 text-xs font-bold text-teal">
-                          <Sparkles className="h-3.5 w-3.5" /> Premium
-                        </span>
-                        <span className="text-xs font-semibold text-ink/50 transition group-hover:text-teal">
-                          Ver detalhes →
-                        </span>
-                      </div>
-                    </div>
-                  </article>
-                </Link>
-              </Reveal>
-            ))}
+          {/* Magazine spread: 1 featured + 2 stacked */}
+          <div className="mt-14 grid gap-6 lg:grid-cols-12">
+            <Reveal className="lg:col-span-7">
+              <FeaturedSpread product={featuredProduct} />
+            </Reveal>
+
+            <div className="grid gap-6 lg:col-span-5">
+              {supportingProducts.slice(0, 2).map((p, i) => (
+                <Reveal key={p.id} delay={(i + 1) as 1 | 2}>
+                  <SecondarySpread product={p} index={i + 2} />
+                </Reveal>
+              ))}
+            </div>
           </div>
+
+          {/* Horizontal scroll strip with the rest */}
+          {supportingProducts.length > 2 && (
+            <Reveal delay={3}>
+              <div className="mt-12 border-t border-line/70 pt-10">
+                <div className="mb-5 flex items-end justify-between">
+                  <p className="font-display text-xl font-bold text-ink">
+                    Mais do nosso trabalho
+                    <span className="ml-3 text-sm font-normal text-ink/50">deslize →</span>
+                  </p>
+                  <Link href="/produtos" className="text-sm font-bold text-tealDeep hover:underline">
+                    Ver tudo
+                  </Link>
+                </div>
+                <div className="-mx-4 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-4">
+                  {supportingProducts.slice(2).map((p, i) => (
+                    <StripCard key={p.id} product={p} index={i + 4} />
+                  ))}
+                  {/* Custom CTA tile at the end */}
+                  <Link
+                    href="/produtos"
+                    className="group flex w-[260px] shrink-0 snap-start flex-col items-start justify-between gap-6 rounded-2xl border border-dashed border-tealDeep/40 bg-mist/40 p-6 transition hover:border-tealDeep hover:bg-mist"
+                  >
+                    <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-tealDeep text-white">
+                      <ArrowUpRight className="h-5 w-5 transition group-hover:rotate-12" />
+                    </span>
+                    <div>
+                      <p className="font-display text-2xl font-bold leading-tight text-ink">Ver tudo no catálogo</p>
+                      <p className="mt-2 text-sm text-ink/65">Filtros, preços e prazos por categoria.</p>
+                    </div>
+                  </Link>
+                </div>
+              </div>
+            </Reveal>
+          )}
         </div>
 
         {/* CTA BANNER */}
-        <Reveal as="section" className="mt-16 lg:mt-20">
+        <Reveal as="section" className="container-px mt-16 lg:mt-20">
           <div className="isolate mx-auto flex min-h-[260px] max-w-4xl items-center justify-center bg-[url('/assets/HeroButtonBackground.webp')] bg-contain bg-center bg-no-repeat px-4 py-10 md:min-h-[300px] md:py-12 lg:min-h-[400px] lg:max-w-6xl lg:py-16 xl:min-h-[460px] xl:max-w-7xl">
             <a
-              href="https://wa.me/5511993796258"
+              href={WHATSAPP_URL}
               className="group relative inline-flex items-center justify-center overflow-hidden rounded-full border border-white/65 bg-gradient-to-b from-white/50 via-white/22 to-white/[0.12] px-10 py-4 text-sm font-bold text-ink shadow-[inset_0_1px_0_0_rgba(255,255,255,0.85),0_8px_32px_rgba(18,59,60,0.12)] backdrop-blur-2xl transition duration-300 md:px-12 md:py-5 md:text-base hover:border-white/90 hover:from-white/65 hover:via-white/35 hover:to-white/18 animate-pulse-subtle"
             >
               <span className="absolute inset-0 h-full w-full -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent animate-laser" />
@@ -502,6 +513,88 @@ export default function Home() {
             </a>
           </div>
         </Reveal>
+      </section>
+
+      {/* CORPORATIVO */}
+      <section id="corporativo" className="relative overflow-hidden bg-sand text-ink">
+        <div className="pointer-events-none absolute inset-0 grain-light opacity-60" />
+        <div className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-tealDeep/10 blur-3xl" />
+        <div className="pointer-events-none absolute -left-24 bottom-0 h-80 w-80 rounded-full bg-amber/20 blur-3xl" />
+
+        <div className="container-px relative py-20 md:py-28">
+          <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:items-center">
+            <Reveal>
+              <div className="inline-flex items-center gap-3">
+                <span className="inline-flex items-center gap-2 rounded-full border border-ink/15 bg-white/70 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-ink/80 backdrop-blur">
+                  <Briefcase className="h-3.5 w-3.5 text-tealDeep" />
+                  Para sua empresa
+                </span>
+                <span className="hidden h-px w-12 bg-ink/20 sm:block" />
+              </div>
+
+              <h2 className="mt-6 font-display text-4xl font-bold leading-[1.02] tracking-tight text-ink md:text-5xl lg:text-6xl">
+                Brindes, mimos & peças sob medida.{" "}
+                <span className="italic text-tealDeep">Em escala.</span>
+              </h2>
+              <p className="mt-6 max-w-lg text-base leading-7 text-ink/75 md:text-lg">
+                Linhas customizadas para sua empresa, agência ou e-commerce. Da ideação à entrega — com a sua marca,
+                sua cor, sua história. Desconto progressivo a partir de 10 unidades.
+              </p>
+
+              <div className="mt-8 grid gap-3 sm:grid-cols-3">
+                <CorporateStat label="Mínimo" value="10 un" />
+                <CorporateStat label="Desconto" value="até 30%" />
+                <CorporateStat label="Prazo" value="10–14 dias" />
+              </div>
+
+              <div className="mt-9 flex flex-wrap gap-3">
+                <a
+                  href={WHATSAPP_CORPORATE}
+                  className="group inline-flex items-center justify-center gap-3 rounded-full bg-ink px-7 py-4 text-sm font-bold text-white shadow-[0_18px_40px_rgba(18,59,60,0.25)] transition hover:bg-tealDeep"
+                >
+                  <Briefcase className="h-4 w-4" />
+                  Solicitar proposta corporativa
+                  <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                </a>
+                <Link
+                  href="/produtos?categoria=Corporativo"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-ink/20 bg-white/70 px-6 py-4 text-sm font-bold text-ink backdrop-blur transition hover:border-tealDeep hover:bg-white"
+                >
+                  Ver linha corporativa
+                </Link>
+              </div>
+
+              <p className="mt-5 inline-flex items-center gap-2 text-xs text-ink/60">
+                <ShieldCheck className="h-4 w-4 text-tealDeep" />
+                NDA e marca branca disponíveis sob solicitação.
+              </p>
+            </Reveal>
+
+            <Reveal delay={2}>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {corporateUseCases.map(({ icon: Icon, title, text }, i) => (
+                  <article
+                    key={title}
+                    className={`tilt-card group relative overflow-hidden rounded-2xl border border-ink/10 bg-white/90 p-6 backdrop-blur shadow-[0_10px_30px_rgba(18,59,60,0.06)] ${
+                      i % 2 === 1 ? "sm:mt-8" : ""
+                    }`}
+                  >
+                    <div className="flex items-start justify-between">
+                      <span className="grid h-12 w-12 place-items-center rounded-xl bg-tealDeep text-white transition group-hover:rotate-6 group-hover:bg-ink">
+                        <Icon className="h-5 w-5" />
+                      </span>
+                      <span className="font-display text-2xl font-bold text-tealDeep/15">
+                        0{i + 1}
+                      </span>
+                    </div>
+                    <h3 className="mt-5 font-display text-lg font-bold text-ink">{title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-ink/70">{text}</p>
+                  </article>
+                ))}
+              </div>
+            </Reveal>
+          </div>
+        </div>
       </section>
 
       {/* MAKERWORLD */}
@@ -551,7 +644,7 @@ export default function Home() {
                   <ExternalLink className="h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </a>
                 <a
-                  href="https://wa.me/5511993796258?text=Olá!%20Encontrei%20um%20modelo%20no%20MakerWorld%20e%20quero%20um%20orçamento.%20Link:%20"
+                  href={`${WHATSAPP_URL}?text=Olá!%20Encontrei%20um%20modelo%20no%20MakerWorld%20e%20quero%20um%20orçamento.%20Link:%20`}
                   className="inline-flex items-center justify-center gap-2 rounded-full border border-teal/40 bg-white px-7 py-4 text-sm font-bold text-ink transition hover:border-teal hover:bg-teal hover:text-white"
                 >
                   <WhatsAppIcon className="h-4 w-4" />
@@ -577,7 +670,6 @@ export default function Home() {
                       <div
                         key={i}
                         className="group relative aspect-square overflow-hidden rounded-lg bg-gradient-to-br from-mist to-line"
-                        style={{ animationDelay: `${i * 120}ms` }}
                       >
                         <div className="absolute inset-0 grid place-items-center">
                           <Cuboid className="h-8 w-8 text-tealDeep/40 transition group-hover:rotate-12 group-hover:text-tealDeep/70" style={{ transform: `rotate(${(i * 17) % 30 - 15}deg)` }} />
@@ -656,7 +748,7 @@ export default function Home() {
                 Se não achar o que procura, manda mensagem direto no WhatsApp — a gente responde rapidinho.
               </p>
               <a
-                href="https://wa.me/5511993796258"
+                href={WHATSAPP_URL}
                 className="mt-8 inline-flex items-center gap-2 rounded-full bg-tealDeep px-6 py-3.5 text-sm font-bold text-white shadow-soft transition hover:bg-ink"
               >
                 <WhatsAppIcon className="h-4 w-4" />
@@ -670,117 +762,158 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer id="contato" className="bg-tealDeep text-white">
-        <div className="container-px grid gap-10 py-14 md:grid-cols-[1.3fr_1fr_1fr_1.2fr] lg:py-20">
-          <div>
-            <LogoMark2 />
-            <p className="mt-6 max-w-xs text-sm leading-7 text-white/78">
-              Impressão 3D de qualidade para transformar ideias em produtos reais.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <a href="https://wa.me/5511993796258" aria-label="WhatsApp" className="grid h-11 w-11 place-items-center rounded-full bg-white/10 text-white transition hover:bg-white/20">
-                <WhatsAppIcon className="h-5 w-5" />
-              </a>
-              <a href="https://www.instagram.com/kyrios_3d/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="grid h-11 w-11 place-items-center rounded-full bg-white/10 text-white transition hover:bg-white/20">
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a href="https://shopee.com.br/kyrios3d" target="_blank" rel="noopener noreferrer" aria-label="Loja na Shopee" className="grid h-11 w-11 place-items-center rounded-full bg-white/10 text-white transition hover:bg-white/20">
-                <ShoppingBag className="h-5 w-5" />
-              </a>
-            </div>
-          </div>
-          <FooterList title="Navegação" items={navItems} />
-          <FooterList
-            title="Produtos"
-            items={["Busto", "Itens Personalizados", "Chaveiros Personalizados", "Placas e Logos", "Porta fotos / quadros", "Decoração", "Peças Técnicas", "e muito mais."]}
-          />
-          <div>
-            <h3 className="font-display text-lg font-bold">Fale conosco</h3>
-            <a href="https://wa.me/5511993796258" className="mt-6 flex items-center justify-between rounded-xl border border-white/20 p-4 transition hover:bg-white/10">
-              <span className="flex items-center gap-3">
-                <WhatsAppIcon />
-                <span>
-                  <strong className="block">WhatsApp</strong>(11) 99379-6258
-                </span>
-              </span>
-              <ArrowRight className="h-5 w-5" />
-            </a>
-            <a href="https://shopee.com.br/kyrios3d" target="_blank" rel="noopener noreferrer" className="mt-4 flex items-center justify-between rounded-xl border border-white/20 p-4 transition hover:bg-white/10">
-              <span className="flex items-center gap-3">
-                <Image src="/assets/Shoppe-icon-white.png" alt="Shopee" width={20} height={20} className="object-contain" />
-                <span>
-                  <strong className="block">Loja na Shopee</strong>shopee.com.br/kyrios3d
-                </span>
-              </span>
-              <ArrowRight className="h-5 w-5" />
-            </a>
-            <div className="mt-6 space-y-4 text-sm text-white/78">
-              <p className="flex items-center gap-3"><Mail className="h-5 w-5" /> contato@kyrios3d.com</p>
-              <p className="flex items-center gap-3"><MapPin className="h-5 w-5" /> São Paulo - SP</p>
-            </div>
-          </div>
-        </div>
-        <div className="container-px grid gap-5 border-t border-white/14 py-8 text-sm text-white/75 md:grid-cols-4">
-          {footerBenefits.map(({ icon: Icon, title, text }) => (
-            <div key={title} className="flex items-center gap-4">
-              <Icon className="h-8 w-8 text-white/90" />
-              <p><strong className="block text-white">{title}</strong>{text}</p>
-            </div>
-          ))}
-        </div>
-        <div className="container-px flex flex-col gap-4 border-t border-white/10 py-8 text-sm text-white/65 md:flex-row md:items-center md:justify-between">
-          <p>© 2026 Kyrios Impressão 3D. Todos os direitos reservados.</p>
-          <p className="flex gap-8">
-            <a href="#inicio">Política de Privacidade</a>
-            <a href="#inicio">Termos de Uso</a>
-          </p>
-        </div>
-      </footer>
-
+      <SiteFooter />
       <StickyMobileCTA />
     </main>
   );
 }
 
-function LogoMark() {
+/* -------------------------------------------------------------------------- */
+/* Vitrine helpers                                                            */
+/* -------------------------------------------------------------------------- */
+
+function FeaturedSpread({ product }: { product: (typeof works)[number] }) {
   return (
-    <Image
-      src="/assets/kyrios-logo.png"
-      alt="Kyrios Impressão 3D"
-      width={220}
-      height={60}
-      className="h-14 w-auto md:h-16"
-      priority
-    />
+    <Link href={`/produtos/${product.id}`} className="group block h-full">
+      <article className="relative h-full overflow-hidden rounded-3xl border border-line bg-white shadow-[0_30px_80px_-30px_rgba(18,59,60,0.25)]">
+        <div className="relative aspect-[4/5] overflow-hidden bg-mist md:aspect-[5/4]">
+          <Image
+            src={product.image}
+            alt={product.title}
+            fill
+            className="object-cover transition duration-700 group-hover:scale-105"
+            sizes="(max-width: 1024px) 100vw, 60vw"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-ink/65 via-ink/10 to-transparent" />
+          <span className="absolute left-5 top-5 inline-flex items-center gap-1.5 rounded-full bg-amber px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-ink">
+            <Sparkles className="h-3 w-3" /> Em destaque
+          </span>
+          <span className="absolute right-5 top-5 font-display text-3xl font-bold leading-none tabular-nums text-white/80">
+            01
+          </span>
+
+          <div className="absolute inset-x-0 bottom-0 p-6 text-white md:p-8">
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/75">
+              {product.category}
+            </p>
+            <h3 className="mt-2 font-display text-3xl font-bold leading-[1.05] md:text-4xl lg:text-5xl">
+              {product.title}
+            </h3>
+            <p className="mt-3 max-w-xl text-sm leading-6 text-white/85 md:text-base">
+              {product.description}
+            </p>
+            <div className="mt-5 flex flex-wrap items-end justify-between gap-3">
+              <div className="flex flex-wrap items-center gap-4 text-white/80">
+                <span>
+                  <span className="block text-[10px] font-bold uppercase tracking-[0.16em] text-white/60">A partir de</span>
+                  <span className="font-display text-2xl font-bold text-white">{formatPrice(product.priceFrom)}</span>
+                </span>
+                {product.leadTimeDays && (
+                  <span className="inline-flex items-center gap-1.5 text-xs">
+                    <Clock className="h-3.5 w-3.5" /> Entrega ~ {product.leadTimeDays} dias
+                  </span>
+                )}
+              </div>
+              <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-bold text-ink transition group-hover:bg-amber">
+                Ver detalhes
+                <ArrowRight className="h-3.5 w-3.5" />
+              </span>
+            </div>
+          </div>
+        </div>
+      </article>
+    </Link>
   );
 }
 
-function LogoMark2() {
+function SecondarySpread({ product, index }: { product: (typeof works)[number]; index: number }) {
   return (
-    <Image
-      src="/assets/kyrios-logo.png"
-      alt="Kyrios Impressão 3D"
-      width={220}
-      height={60}
-      className="h-16 w-auto md:h-20 brightness-0 invert"
-    />
+    <Link href={`/produtos/${product.id}`} className="group block h-full">
+      <article className="tilt-card relative grid h-full grid-cols-[1fr_1.2fr] overflow-hidden rounded-2xl border border-line bg-white shadow-[0_10px_30px_rgba(18,59,60,0.06)]">
+        <div className="relative overflow-hidden bg-mist">
+          <Image
+            src={product.image}
+            alt={product.title}
+            fill
+            className="object-cover transition duration-500 group-hover:scale-110"
+            sizes="(max-width: 1024px) 50vw, 25vw"
+          />
+        </div>
+        <div className="flex flex-col justify-between gap-3 p-5">
+          <div>
+            <div className="flex items-center justify-between">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-teal/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.14em] text-teal">
+                {product.category}
+              </span>
+              <span className="font-display text-xl font-bold tabular-nums text-ink/15">
+                0{index}
+              </span>
+            </div>
+            <h3 className="mt-3 font-display text-xl font-bold leading-tight text-ink">{product.title}</h3>
+            <p className="mt-1.5 line-clamp-2 text-xs text-ink/60">{product.description}</p>
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.16em] text-ink/50">A partir de</p>
+              <p className="font-display text-lg font-bold text-ink">{formatPrice(product.priceFrom)}</p>
+            </div>
+            <span className="grid h-9 w-9 place-items-center rounded-full bg-mist text-ink transition group-hover:bg-tealDeep group-hover:text-white">
+              <ArrowUpRight className="h-4 w-4" />
+            </span>
+          </div>
+        </div>
+      </article>
+    </Link>
   );
 }
 
-function FooterList({ title, items }: { title: string; items: string[] }) {
+function StripCard({ product, index }: { product: (typeof works)[number]; index: number }) {
   return (
-    <div>
-      <h3 className="font-display text-lg font-bold">{title}</h3>
-      <ul className="mt-6 space-y-3 text-sm text-white/78">
-        {items.map((item) => (
-          <li key={item}>
-            <a href="#inicio" className="hover:text-white">
-              {item}
-            </a>
-          </li>
-        ))}
-      </ul>
+    <Link
+      href={`/produtos/${product.id}`}
+      className="group flex w-[260px] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-line bg-white transition hover:border-teal/40 hover:shadow-[0_18px_40px_-15px_rgba(18,59,60,0.18)]"
+    >
+      <div className="relative aspect-[4/5] overflow-hidden bg-mist">
+        <Image
+          src={product.image}
+          alt={product.title}
+          fill
+          className="object-cover transition duration-500 group-hover:scale-110"
+          sizes="260px"
+        />
+        <span className="absolute left-3 top-3 rounded-full bg-white/85 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.14em] text-ink backdrop-blur">
+          0{index}
+        </span>
+      </div>
+      <div className="flex flex-1 flex-col justify-between gap-3 p-4">
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-ink/55">{product.category}</p>
+          <h4 className="mt-1 font-display text-lg font-bold leading-tight text-ink">{product.title}</h4>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="font-display text-sm font-bold text-ink">{formatPrice(product.priceFrom)}</span>
+          <ArrowRight className="h-4 w-4 text-ink/40 transition group-hover:translate-x-1 group-hover:text-tealDeep" />
+        </div>
+        {product.tags && product.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {product.tags.slice(0, 2).map((t) => (
+              <span key={t} className="inline-flex items-center gap-1 rounded-full bg-mist px-2 py-0.5 text-[9px] font-semibold text-ink/60">
+                <Tag className="h-2.5 w-2.5" /> {t}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    </Link>
+  );
+}
+
+function CorporateStat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-xl border border-ink/10 bg-white/80 p-4 backdrop-blur">
+      <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-ink/55">{label}</p>
+      <p className="mt-1 font-display text-2xl font-bold text-ink">{value}</p>
     </div>
   );
 }
