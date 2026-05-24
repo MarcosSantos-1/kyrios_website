@@ -149,7 +149,43 @@ export default async function Home() {
           <div className="hero-wave pointer-events-none absolute -left-12 -top-12 h-[400px] w-[400px] opacity-30 lg:hidden" />
           <div className="hero-wave pointer-events-none absolute -right-24 -top-24 hidden h-[800px] w-[800px] opacity-40 lg:block" />
 
-          <div className="relative z-10 max-w-2xl">
+          {/* Imagem primeiro no DOM (preload/LCP), mas abaixo do texto no mobile */}
+          <div className="relative z-10 order-2 w-full lg:order-2 lg:min-h-[780px]">
+            <div className="pointer-events-none absolute -right-10 top-20 h-72 w-72 rounded-full bg-tealBright/15 blur-3xl" />
+            <Image
+              src="/assets/KyriosMainImage-mobile.webp"
+              alt="Produtos impressos em 3D da Kyrios"
+              width={750}
+              height={934}
+              priority
+              sizes="100vw"
+              quality={80}
+              className="mx-auto h-auto w-full max-w-[750px] object-contain object-top lg:hidden"
+            />
+            <div className="relative hidden min-h-[780px] lg:block">
+              <Image
+                src="/assets/KyriosMainImage-desktop.webp"
+                alt="Produtos impressos em 3D da Kyrios"
+                fill
+                priority
+                sizes="55vw"
+                quality={82}
+                className="object-contain object-right-top"
+              />
+            </div>
+            <div
+              aria-hidden
+              className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 lg:left-[60%]"
+              style={{
+                width: "72%",
+                height: "48px",
+                background: "radial-gradient(ellipse at center, rgba(18,59,60,0.22) 0%, transparent 72%)",
+                filter: "blur(6px)",
+              }}
+            />
+          </div>
+
+          <div className="relative z-10 order-1 max-w-2xl lg:order-1">
             <Reveal>
               <span className="inline-flex items-center gap-2 rounded-full border border-teal/20 bg-white/70 px-4 py-2 text-xs font-bold text-ink backdrop-blur">
                 <span className="relative flex h-2 w-2">
@@ -231,8 +267,9 @@ export default async function Home() {
                             alt="Cliente Kyrios"
                             width={36}
                             height={36}
+                            sizes="36px"
+                            loading="lazy"
                             className="h-full w-full object-cover"
-                            unoptimized
                           />
                         ) : (
                           avatar.initials
@@ -258,30 +295,6 @@ export default async function Home() {
                 </div>
               </div>
             </Reveal>
-          </div>
-
-          <div className="relative z-10 min-h-[480px] lg:min-h-[780px]">
-            <div className="pointer-events-none absolute -right-10 top-20 h-72 w-72 rounded-full bg-tealBright/15 blur-3xl" />
-            <Image
-              src="/assets/KyriosMainImage.webp"
-              alt="Produtos impressos em 3D da Kyrios"
-              fill
-              className="object-contain object-[center_top] lg:object-[right_top]"
-              priority
-              sizes="(max-width: 1280px) 100vw, 55vw"
-              unoptimized
-            />
-            {/* Floor shadow — elliptical gradient that simulates the objects resting on a surface */}
-            <div
-              aria-hidden
-              className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 lg:left-[60%]"
-              style={{
-                width: "72%",
-                height: "48px",
-                background: "radial-gradient(ellipse at center, rgba(18,59,60,0.22) 0%, transparent 72%)",
-                filter: "blur(6px)",
-              }}
-            />
           </div>
         </div>
       </section>
@@ -750,8 +763,9 @@ export default async function Home() {
                         alt={t.name}
                         width={40}
                         height={40}
+                        sizes="40px"
+                        loading="lazy"
                         className="h-10 w-10 shrink-0 rounded-full object-cover"
-                        unoptimized
                       />
                     ) : (
                       <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-tealDeep text-xs font-bold text-white">
@@ -820,8 +834,8 @@ function FeaturedSpread({ product, siteConfig }: { product: Product; siteConfig:
             alt={product.title}
             fill
             className="object-cover transition duration-700 group-hover:scale-105"
-            sizes="(max-width: 1024px) 100vw, 60vw"
-            priority
+            sizes="(max-width: 640px) 90vw, (max-width: 1024px) 60vw, 40vw"
+            loading="lazy"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-ink/65 via-ink/10 to-transparent" />
           <span className="absolute left-5 top-5 inline-flex items-center gap-1.5 rounded-full bg-amber px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-ink">

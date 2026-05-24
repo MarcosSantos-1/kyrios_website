@@ -33,6 +33,22 @@ export default function RootLayout({
     <html lang="pt-BR" className={`${fraunces.variable} ${jakarta.variable}`}>
       <head>
         <link
+          rel="preload"
+          as="image"
+          href="/assets/KyriosMainImage-mobile.webp"
+          type="image/webp"
+          media="(max-width: 1023px)"
+          fetchPriority="high"
+        />
+        <link
+          rel="preload"
+          as="image"
+          href="/assets/KyriosMainImage-desktop.webp"
+          type="image/webp"
+          media="(min-width: 1024px)"
+          fetchPriority="high"
+        />
+        <link
           rel="icon"
           href="/assets/kyrios-logo.svg"
           type="image/svg+xml"

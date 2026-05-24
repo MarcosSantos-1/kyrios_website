@@ -37,13 +37,16 @@ export function WhatsAppIcon({ className = "h-5 w-5" }: { className?: string }) 
 
 export function LogoMark({ inverted = false, className }: { inverted?: boolean; className?: string }) {
   return (
-    <Image
-      src="/assets/kyrios-logo.png"
+    // SVG nativo — evita baixar PNG 1000×1000 via otimizador de imagem.
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/assets/kyrios-logo.svg"
       alt="Kyrios Impressão 3D"
       width={220}
       height={60}
+      fetchPriority="high"
+      decoding="async"
       className={className ?? `h-14 w-auto md:h-16 ${inverted ? "brightness-0 invert" : ""}`}
-      priority
     />
   );
 }
