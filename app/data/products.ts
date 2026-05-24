@@ -24,6 +24,8 @@ export interface Product {
   };
   /** Starting price in BRL. `undefined` means "Sob consulta". */
   priceFrom?: number;
+  /** Sale (promotional) starting price in BRL. */
+  salePriceFrom?: number;
   /** Estimated lead time in business days. */
   leadTimeDays?: number;
   /** Visible tags shown in cards. */
@@ -32,6 +34,8 @@ export interface Product {
   corporate?: boolean;
   /** Whether to spotlight as the editorial hero. */
   featured?: boolean;
+  /** Direct link to this product on Shopee. If set, a "Ver na Shopee" button appears. */
+  shopeeUrl?: string;
 }
 
 export const works: Product[] = [

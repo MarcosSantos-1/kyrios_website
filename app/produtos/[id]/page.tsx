@@ -17,14 +17,20 @@ import {
 import { ProductGallery } from "../../components/ProductGallery";
 import { Reveal, StickyMobileCTA } from "../../components/Interactive";
 import { SiteFooter, SiteHeader, WHATSAPP_URL, WhatsAppIcon } from "../../components/SiteChrome";
-import { formatPrice, works } from "../../data/products";
+import { formatPrice } from "../../data/products";
+import { computeEffectivePrice, getProducts, getSiteConfig } from "../../lib/cms";
 
 export async function generateStaticParams() {
-  return works.map((p) => ({ id: p.id }));
+  const products = await getProducts();
+  return products.map((p) => ({ id: p.id }));
 }
 
-export function generateMetadata({ params }: { params: { id: string } }) {
-  const product = works.find((p) => p.id === params.id);
+// Permite que novos produtos criados no admin sejam servidos sob demanda (ISR).
+export const dynamicParams = true;
+
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  const products = await getProducts();
+  const product = products.find((p) => p.id === params.id);
   if (!product) return { title: "Produto não encontrado — Kyrios" };
   return {
     title: `${product.title} — Kyrios Impressão 3D`,
@@ -32,12 +38,15 @@ export function generateMetadata({ params }: { params: { id: string } }) {
   };
 }
 
-export default function ProductPage({ params }: { params: { id: string } }) {
-  const product = works.find((p) => p.id === params.id);
+export default async function ProductPage({ params }: { params: { id: string } }) {
+  const [products, siteConfig] = await Promise.all([getProducts(), getSiteConfig()]);
+  const product = products.find((p) => p.id === params.id);
   if (!product) notFound();
 
-  const related = works.filter((p) => p.id !== product.id && p.category === product.category).slice(0, 3);
-  const fallbackRelated = works.filter((p) => p.id !== product.id).slice(0, 3);
+  const { display: displayPrice, original: originalPrice } = computeEffectivePrice(product, siteConfig);
+
+  const related = products.filter((p) => p.id !== product.id && p.category === product.category).slice(0, 3);
+  const fallbackRelated = products.filter((p) => p.id !== product.id).slice(0, 3);
   const relatedFinal = related.length > 0 ? related : fallbackRelated;
 
   const wppMessage = `https://wa.me/5511993796258?text=Olá!%20Quero%20um%20orçamento%20de%20${encodeURIComponent(product.title)}.`;
@@ -100,7 +109,10 @@ export default function ProductPage({ params }: { params: { id: string } }) {
               <div className="mt-8 grid gap-4 rounded-2xl border border-line bg-white p-5 shadow-soft sm:grid-cols-2">
                 <div>
                   <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink/55">A partir de</p>
-                  <p className="mt-1 font-display text-3xl font-bold text-ink">{formatPrice(product.priceFrom)}</p>
+                  {originalPrice !== undefined && (
+                    <del className="mt-0.5 block text-sm font-semibold text-ink/40 line-through">{formatPrice(originalPrice)}</del>
+                  )}
+                  <p className="mt-1 font-display text-3xl font-bold text-ink">{formatPrice(displayPrice)}</p>
                   <p className="mt-1 text-xs text-ink/55">orçamento personalizado no WhatsApp</p>
                 </div>
                 <div className="border-t border-line pt-4 sm:border-l sm:border-t-0 sm:pl-5 sm:pt-0">
@@ -124,15 +136,17 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                   Solicitar orçamento
                   <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
                 </a>
-                <a
-                  href="https://shopee.com.br/kyrios3d"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 rounded-full border border-line bg-white px-6 py-4 text-sm font-bold text-ink transition hover:border-tealDeep hover:text-tealDeep"
-                >
-                  <ShoppingBag className="h-4 w-4" />
-                  Ver na Shopee
-                </a>
+                {product.shopeeUrl && (
+                  <a
+                    href={product.shopeeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-[#EE4D2D] px-6 py-4 text-sm font-bold text-white shadow-soft transition hover:bg-[#d73d1d]"
+                  >
+                    <ShoppingBag className="h-4 w-4" />
+                    Ver na Shopee
+                  </a>
+                )}
               </div>
 
               <p className="mt-3 text-center text-[11px] text-ink/50 sm:text-left">

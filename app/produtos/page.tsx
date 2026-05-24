@@ -3,14 +3,15 @@ import type { Metadata } from "next";
 import { ProductCatalog } from "../components/ProductCatalog";
 import { SiteFooter, SiteHeader, WHATSAPP_URL, WhatsAppIcon } from "../components/SiteChrome";
 import { Reveal, StickyMobileCTA } from "../components/Interactive";
-import { works } from "../data/products";
+import { getProducts } from "../lib/cms";
 
 export const metadata: Metadata = {
   title: "Catálogo — Kyrios Impressão 3D",
   description: "Explore todo o catálogo Kyrios: bustos, peças personalizadas, decoração, brindes corporativos e mais. Preços e prazos atualizados.",
 };
 
-export default function ProdutosPage() {
+export default async function ProdutosPage() {
+  const products = await getProducts();
   return (
     <main className="min-h-screen bg-[#f7faf9] text-ink">
       <SiteHeader activeLabel="Produtos" />
@@ -34,8 +35,8 @@ export default function ProdutosPage() {
           </Reveal>
           <Reveal delay={2}>
             <dl className="grid grid-cols-3 gap-4 rounded-2xl border border-line bg-white p-5 shadow-soft md:p-6">
-              <Stat label="Categorias" value="6" />
-              <Stat label="Produtos" value={`${works.length}`} />
+              <Stat label="Categorias" value={`${new Set(products.map((p) => p.category)).size}`} />
+              <Stat label="Produtos" value={`${products.length}`} />
               <Stat label="Prazo médio" value="5–7 dias" small />
             </dl>
             <a
@@ -52,7 +53,7 @@ export default function ProdutosPage() {
 
       {/* CATALOG */}
       <section className="container-px py-12 md:py-16">
-        <ProductCatalog products={works} />
+        <ProductCatalog products={products} />
       </section>
 
       <SiteFooter />

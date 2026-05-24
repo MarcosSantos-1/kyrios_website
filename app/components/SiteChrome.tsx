@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { works } from "../data/products";
 import {
   ArrowRight,
   Headphones,
@@ -140,12 +141,7 @@ export function SiteFooter() {
           title="Catálogo"
           items={[
             { label: "Todos os produtos", href: "/produtos" },
-            { label: "Bustos", href: "/produtos/bustos" },
-            { label: "Itens Personalizados", href: "/produtos/chaveiros-1" },
-            { label: "Chaveiros Temáticos", href: "/produtos/chaveiros-2" },
-            { label: "Logos e Placas", href: "/produtos/logos-placas" },
-            { label: "Suportes", href: "/produtos/suportes" },
-            { label: "Decoração", href: "/produtos/decoracao" },
+            ...works.slice(0, 6).map((p) => ({ label: p.title, href: `/produtos/${p.id}` })),
           ]}
         />
 

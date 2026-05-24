@@ -1,0 +1,49 @@
+rules_version = '2';
+
+// Regras do Firebase Storage para a Kyrios.
+//
+// Como aplicar:
+// 1. Firebase Console → Storage → Rules
+// 2. Cole este arquivo inteiro e publique.
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email in [
+        "marcosv.dev@outlook.com"
+        // , "contato@kyrios3d.com"
+      ];
+    }
+
+    // Imagens de produto: público pode visualizar; só admin sobe/apaga.
+    match /products/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin()
+        // Limite por arquivo: 8 MB e só imagens
+        && request.resource.size < 8 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // Imagens do site (hero, banners): mesma regra.
+    match /site/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin()
+        && request.resource.size < 8 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // Fotos de testemunhas de depoimentos: público pode visualizar; só admin sobe/apaga.
+    match /testimonials/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin()
+        && request.resource.size < 8 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // Bloqueia tudo o resto.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

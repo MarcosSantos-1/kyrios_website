@@ -28,7 +28,8 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import type { ComponentType, SVGProps } from "react";
-import { formatPrice, works } from "./data/products";
+import { formatPrice, type Product } from "./data/products";
+import { computeEffectivePrice, getHomeData, pickFeatured, type SiteConfig, type Testimonial as TestimonialT } from "./lib/cms";
 import { CountUp, FAQ, Reveal, StickyMobileCTA } from "./components/Interactive";
 import {
   SiteFooter,
@@ -75,26 +76,7 @@ const corporateUseCases: Array<{ icon: LucideIcon; title: string; text: string }
   { icon: Briefcase, title: "Linha customizada", text: "Para sua loja, agência ou e-commerce: produção em escala, sob marca branca." },
 ];
 
-const testimonials = [
-  {
-    name: "Marina A.",
-    role: "Cliente — Bustos personalizados",
-    quote: "Pedi um busto de presente e o nível de detalhe me impressionou. Acabamento impecável e entrega bem antes do prazo.",
-    initials: "MA",
-  },
-  {
-    name: "João P.",
-    role: "Empresário — Logos em 3D",
-    quote: "Coloquei o logo da empresa na recepção e mudou tudo. Atenderam minhas mudanças sem reclamar e o resultado ficou top.",
-    initials: "JP",
-  },
-  {
-    name: "Larissa I.",
-    role: "Cliente — Decoração",
-    quote: "Conversa direta no WhatsApp, mandaram preview antes de imprimir e a peça chegou perfeita. Já encomendei outras.",
-    initials: "LI",
-  },
-];
+// Depoimentos agora vêm do Firestore (com fallback). Tipo importado de ./lib/cms.
 
 const faqItems = [
   {
@@ -129,14 +111,36 @@ const faqItems = [
 
 const avatars = ["MA", "JP", "LI", "BR", "CA"];
 
-// Featured product (editorial spotlight) + supporting cast
-const featuredProduct = works.find((p) => p.featured) ?? works[0];
-const supportingProducts = works.filter((p) => p.id !== featuredProduct.id);
+export default async function Home() {
+  const { products, testimonials, siteConfig } = await getHomeData();
+  const featuredProduct = pickFeatured(products, siteConfig);
+  const supportingProducts = products.filter((p) => p.id !== featuredProduct.id);
+  const deliveredCount = siteConfig.heroStats?.deliveredCount ?? 500;
+  const approvalPct = siteConfig.heroStats?.approvalPct ?? 98;
+  const heroAvatarItems = avatars.map((initials, index) => ({
+    initials,
+    src: siteConfig.heroAvatars?.[index],
+  }));
+  const promo = siteConfig.promo?.enabled ? siteConfig.promo : null;
 
-export default function Home() {
   return (
     <main className="overflow-hidden">
       <SiteHeader activeLabel="Início" />
+
+      {/* PROMO BANNER (admin-controlled) */}
+      {promo && (
+        <div className="relative isolate overflow-hidden bg-amber py-2 text-center text-sm font-bold text-ink">
+          <span className="inline-flex items-center gap-2">
+            <Sparkles className="h-4 w-4" />
+            {promo.label || "Promoção ativa"}
+            {typeof promo.discountPct === "number" && promo.discountPct > 0 && (
+              <span className="rounded-full bg-ink px-2 py-0.5 text-[11px] uppercase tracking-wider text-white">
+                {promo.discountPct}% OFF
+              </span>
+            )}
+          </span>
+        </div>
+      )}
 
       {/* HERO */}
       <section id="inicio" className="relative">
@@ -219,9 +223,20 @@ export default function Home() {
               <div className="mt-8 flex flex-wrap items-center gap-6">
                 <div className="flex items-center gap-4">
                   <div className="flex -space-x-3">
-                    {avatars.map((avatar) => (
-                      <span key={avatar} className="grid h-9 w-9 place-items-center rounded-full border-2 border-white bg-tealDeep text-[10px] font-bold text-white">
-                        {avatar}
+                    {heroAvatarItems.map((avatar) => (
+                      <span key={avatar.initials} className="grid h-9 w-9 place-items-center overflow-hidden rounded-full border-2 border-white bg-tealDeep text-[10px] font-bold text-white">
+                        {avatar.src ? (
+                          <Image
+                            src={avatar.src}
+                            alt="Cliente Kyrios"
+                            width={36}
+                            height={36}
+                            className="h-full w-full object-cover"
+                            unoptimized
+                          />
+                        ) : (
+                          avatar.initials
+                        )}
                       </span>
                     ))}
                   </div>
@@ -233,11 +248,11 @@ export default function Home() {
                 <div className="hidden h-12 w-px bg-line sm:block" />
                 <div className="flex gap-8">
                   <div>
-                    <p className="font-display text-3xl font-bold text-ink"><CountUp end={500} suffix="+" /></p>
+                    <p className="font-display text-3xl font-bold text-ink"><CountUp end={deliveredCount} suffix="+" /></p>
                     <p className="text-xs text-ink/60">peças entregues</p>
                   </div>
                   <div>
-                    <p className="font-display text-3xl font-bold text-ink"><CountUp end={98} suffix="%" /></p>
+                    <p className="font-display text-3xl font-bold text-ink"><CountUp end={approvalPct} suffix="%" /></p>
                     <p className="text-xs text-ink/60">aprovação</p>
                   </div>
                 </div>
@@ -255,6 +270,17 @@ export default function Home() {
               priority
               sizes="(max-width: 1280px) 100vw, 55vw"
               unoptimized
+            />
+            {/* Floor shadow — elliptical gradient that simulates the objects resting on a surface */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 lg:left-[60%]"
+              style={{
+                width: "72%",
+                height: "48px",
+                background: "radial-gradient(ellipse at center, rgba(18,59,60,0.22) 0%, transparent 72%)",
+                filter: "blur(6px)",
+              }}
             />
           </div>
         </div>
@@ -430,7 +456,7 @@ export default function Home() {
                     Vitrine editorial
                   </span>
                   <span className="hidden text-[11px] font-bold uppercase tracking-[0.18em] text-ink/40 sm:inline">
-                    Edição #01 · {new Date().toLocaleDateString("pt-BR", { month: "long", year: "numeric" })}
+                    {siteConfig.vitrineEdition ?? "Edição #01"} · {new Date().toLocaleDateString("pt-BR", { month: "long", year: "numeric" })}
                   </span>
                 </div>
                 <h2 className="mt-5 font-display text-5xl font-bold leading-[0.98] tracking-tight text-ink md:text-6xl lg:text-7xl">
@@ -453,13 +479,13 @@ export default function Home() {
           {/* Magazine spread: 1 featured + 2 stacked */}
           <div className="mt-14 grid gap-6 lg:grid-cols-12">
             <Reveal className="lg:col-span-7">
-              <FeaturedSpread product={featuredProduct} />
+              <FeaturedSpread product={featuredProduct} siteConfig={siteConfig} />
             </Reveal>
 
             <div className="grid gap-6 lg:col-span-5">
               {supportingProducts.slice(0, 2).map((p, i) => (
                 <Reveal key={p.id} delay={(i + 1) as 1 | 2}>
-                  <SecondarySpread product={p} index={i + 2} />
+                  <SecondarySpread product={p} index={i + 2} siteConfig={siteConfig} />
                 </Reveal>
               ))}
             </div>
@@ -480,7 +506,7 @@ export default function Home() {
                 </div>
                 <div className="-mx-4 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-4">
                   {supportingProducts.slice(2).map((p, i) => (
-                    <StripCard key={p.id} product={p} index={i + 4} />
+                    <StripCard key={p.id} product={p} index={i + 4} siteConfig={siteConfig} />
                   ))}
                   {/* Custom CTA tile at the end */}
                   <Link
@@ -718,9 +744,20 @@ export default function Home() {
                     “{t.quote}”
                   </blockquote>
                   <figcaption className="mt-6 flex items-center gap-3 border-t border-line pt-5">
-                    <span className="grid h-10 w-10 place-items-center rounded-full bg-tealDeep text-xs font-bold text-white">
-                      {t.initials}
-                    </span>
+                    {t.photoUrl ? (
+                      <Image
+                        src={t.photoUrl}
+                        alt={t.name}
+                        width={40}
+                        height={40}
+                        className="h-10 w-10 shrink-0 rounded-full object-cover"
+                        unoptimized
+                      />
+                    ) : (
+                      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-tealDeep text-xs font-bold text-white">
+                        {t.initials}
+                      </span>
+                    )}
                     <div>
                       <p className="text-sm font-bold text-ink">{t.name}</p>
                       <p className="text-xs text-ink/60">{t.role}</p>
@@ -772,7 +809,8 @@ export default function Home() {
 /* Vitrine helpers                                                            */
 /* -------------------------------------------------------------------------- */
 
-function FeaturedSpread({ product }: { product: (typeof works)[number] }) {
+function FeaturedSpread({ product, siteConfig }: { product: Product; siteConfig: SiteConfig }) {
+  const { display: displayPrice, original: originalPrice } = computeEffectivePrice(product, siteConfig);
   return (
     <Link href={`/produtos/${product.id}`} className="group block h-full">
       <article className="relative h-full overflow-hidden rounded-3xl border border-line bg-white shadow-[0_30px_80px_-30px_rgba(18,59,60,0.25)]">
@@ -807,7 +845,10 @@ function FeaturedSpread({ product }: { product: (typeof works)[number] }) {
               <div className="flex flex-wrap items-center gap-4 text-white/80">
                 <span>
                   <span className="block text-[10px] font-bold uppercase tracking-[0.16em] text-white/60">A partir de</span>
-                  <span className="font-display text-2xl font-bold text-white">{formatPrice(product.priceFrom)}</span>
+                  {originalPrice !== undefined && (
+                    <del className="block text-xs font-semibold text-white/50 line-through">{formatPrice(originalPrice)}</del>
+                  )}
+                  <span className="font-display text-2xl font-bold text-white">{formatPrice(displayPrice)}</span>
                 </span>
                 {product.leadTimeDays && (
                   <span className="inline-flex items-center gap-1.5 text-xs">
@@ -827,7 +868,8 @@ function FeaturedSpread({ product }: { product: (typeof works)[number] }) {
   );
 }
 
-function SecondarySpread({ product, index }: { product: (typeof works)[number]; index: number }) {
+function SecondarySpread({ product, index, siteConfig }: { product: Product; index: number; siteConfig: SiteConfig }) {
+  const { display: displayPrice, original: originalPrice } = computeEffectivePrice(product, siteConfig);
   return (
     <Link href={`/produtos/${product.id}`} className="group block h-full">
       <article className="tilt-card relative grid h-full grid-cols-[1fr_1.2fr] overflow-hidden rounded-2xl border border-line bg-white shadow-[0_10px_30px_rgba(18,59,60,0.06)]">
@@ -856,7 +898,10 @@ function SecondarySpread({ product, index }: { product: (typeof works)[number]; 
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[10px] uppercase tracking-[0.16em] text-ink/50">A partir de</p>
-              <p className="font-display text-lg font-bold text-ink">{formatPrice(product.priceFrom)}</p>
+              {originalPrice !== undefined && (
+                <del className="text-xs font-semibold text-ink/40 line-through">{formatPrice(originalPrice)}</del>
+              )}
+              <p className="font-display text-lg font-bold text-ink">{formatPrice(displayPrice)}</p>
             </div>
             <span className="grid h-9 w-9 place-items-center rounded-full bg-mist text-ink transition group-hover:bg-tealDeep group-hover:text-white">
               <ArrowUpRight className="h-4 w-4" />
@@ -868,7 +913,8 @@ function SecondarySpread({ product, index }: { product: (typeof works)[number]; 
   );
 }
 
-function StripCard({ product, index }: { product: (typeof works)[number]; index: number }) {
+function StripCard({ product, index, siteConfig }: { product: Product; index: number; siteConfig: SiteConfig }) {
+  const { display: displayPrice, original: originalPrice } = computeEffectivePrice(product, siteConfig);
   return (
     <Link
       href={`/produtos/${product.id}`}
@@ -892,7 +938,12 @@ function StripCard({ product, index }: { product: (typeof works)[number]; index:
           <h4 className="mt-1 font-display text-lg font-bold leading-tight text-ink">{product.title}</h4>
         </div>
         <div className="flex items-center justify-between">
-          <span className="font-display text-sm font-bold text-ink">{formatPrice(product.priceFrom)}</span>
+          <span>
+            {originalPrice !== undefined && (
+              <del className="block text-[10px] font-semibold text-ink/40 line-through">{formatPrice(originalPrice)}</del>
+            )}
+            <span className="font-display text-sm font-bold text-ink">{formatPrice(displayPrice)}</span>
+          </span>
           <ArrowRight className="h-4 w-4 text-ink/40 transition group-hover:translate-x-1 group-hover:text-tealDeep" />
         </div>
         {product.tags && product.tags.length > 0 && (
