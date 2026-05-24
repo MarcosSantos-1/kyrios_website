@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import { SITE_URL } from "./lib/site-url";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -17,6 +18,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Kyrios Impressão 3D — Ideias que ganham forma",
   description:
     "Impressão 3D personalizada de alta qualidade em São Paulo. Bustos, chaveiros, peças técnicas, decoração e modelos do MakerWorld impressos com PETG e PLA premium.",
