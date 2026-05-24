@@ -149,30 +149,16 @@ export default async function Home() {
           <div className="hero-wave pointer-events-none absolute -left-12 -top-12 h-[400px] w-[400px] opacity-30 lg:hidden" />
           <div className="hero-wave pointer-events-none absolute -right-24 -top-24 hidden h-[800px] w-[800px] opacity-40 lg:block" />
 
-          {/* Imagem primeiro no DOM (preload/LCP), mas abaixo do texto no mobile */}
-          <div className="relative z-10 order-2 w-full lg:order-2 lg:min-h-[780px]">
+          <div className="relative z-10 min-h-[420px] lg:min-h-[780px]">
             <div className="pointer-events-none absolute -right-10 top-20 h-72 w-72 rounded-full bg-tealBright/15 blur-3xl" />
             <Image
-              src="/assets/KyriosMainImage-mobile.webp"
+              src="/assets/KyriosMainImage.webp"
               alt="Produtos impressos em 3D da Kyrios"
-              width={750}
-              height={934}
+              fill
               priority
-              sizes="100vw"
-              quality={80}
-              className="mx-auto h-auto w-full max-w-[750px] object-contain object-top lg:hidden"
+              sizes="(max-width: 1024px) 100vw, 55vw"
+              className="object-contain object-[center_top] lg:object-[right_top]"
             />
-            <div className="relative hidden min-h-[780px] lg:block">
-              <Image
-                src="/assets/KyriosMainImage-desktop.webp"
-                alt="Produtos impressos em 3D da Kyrios"
-                fill
-                priority
-                sizes="55vw"
-                quality={82}
-                className="object-contain object-right-top"
-              />
-            </div>
             <div
               aria-hidden
               className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 lg:left-[60%]"
@@ -185,7 +171,7 @@ export default async function Home() {
             />
           </div>
 
-          <div className="relative z-10 order-1 max-w-2xl lg:order-1">
+          <div className="relative z-10 max-w-2xl">
             <Reveal>
               <span className="inline-flex items-center gap-2 rounded-full border border-teal/20 bg-white/70 px-4 py-2 text-xs font-bold text-ink backdrop-blur">
                 <span className="relative flex h-2 w-2">
@@ -837,7 +823,7 @@ function FeaturedSpread({ product, siteConfig }: { product: Product; siteConfig:
             sizes="(max-width: 640px) 90vw, (max-width: 1024px) 60vw, 40vw"
             loading="lazy"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-ink/65 via-ink/10 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/30 to-transparent" />
           <span className="absolute left-5 top-5 inline-flex items-center gap-1.5 rounded-full bg-amber px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-ink">
             <Sparkles className="h-3 w-3" /> Em destaque
           </span>
@@ -849,10 +835,10 @@ function FeaturedSpread({ product, siteConfig }: { product: Product; siteConfig:
             <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/75">
               {product.category}
             </p>
-            <h3 className="mt-2 font-display text-3xl font-bold leading-[1.05] md:text-4xl lg:text-5xl">
+            <h3 className="mt-2 font-display text-3xl font-bold leading-[1.05] text-teal drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] md:text-4xl lg:text-5xl">
               {product.title}
             </h3>
-            <p className="mt-3 max-w-xl text-sm leading-6 text-white/85 md:text-base">
+            <p className="mt-3 max-w-xl rounded-xl bg-ink/40 px-3 py-2 text-sm leading-6 text-white/90 backdrop-blur-sm md:text-base">
               {product.description}
             </p>
             <div className="mt-5 flex flex-wrap items-end justify-between gap-3">
@@ -906,7 +892,7 @@ function SecondarySpread({ product, index, siteConfig }: { product: Product; ind
                 0{index}
               </span>
             </div>
-            <h3 className="mt-3 font-display text-xl font-bold leading-tight text-ink">{product.title}</h3>
+            <h3 className="mt-3 font-display text-xl font-bold leading-tight text-tealDeep">{product.title}</h3>
             <p className="mt-1.5 line-clamp-2 text-xs text-ink/60">{product.description}</p>
           </div>
           <div className="flex items-center justify-between">
@@ -949,7 +935,7 @@ function StripCard({ product, index, siteConfig }: { product: Product; index: nu
       <div className="flex flex-1 flex-col justify-between gap-3 p-4">
         <div>
           <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-ink/55">{product.category}</p>
-          <h4 className="mt-1 font-display text-lg font-bold leading-tight text-ink">{product.title}</h4>
+          <h4 className="mt-1 font-display text-lg font-bold leading-tight text-tealDeep">{product.title}</h4>
         </div>
         <div className="flex items-center justify-between">
           <span>
