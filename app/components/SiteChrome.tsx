@@ -35,61 +35,50 @@ export function WhatsAppIcon({ className = "h-5 w-5" }: { className?: string }) 
   );
 }
 
-export function LogoMark({ inverted = false, className }: { inverted?: boolean; className?: string }) {
+/**
+ * Logo da Kyrios — mobile usa PNG (renderiza melhor no mobile),
+ * desktop usa SVG (vetor crisp). `<picture>` garante que o browser
+ * baixa APENAS uma das duas baseado na media query.
+ *
+ * Para a versão invertida (branca), no desktop usamos o asset dedicado
+ * `kyrios-logo-white.svg`. No mobile aplicamos filtro brightness/invert
+ * sobre o PNG (sem alternativa branca em raster). O filtro é resetado
+ * em md+ pra não interferir no SVG branco.
+ */
+export function LogoMark({
+  inverted = false,
+  className,
+}: {
+  inverted?: boolean;
+  className?: string;
+}) {
+  const baseClass = className ?? "h-16 w-auto md:h-20 select-none";
+  const finalClass = inverted
+    ? `${baseClass} brightness-0 invert md:brightness-100 md:invert-0`
+    : baseClass;
+  const desktopSrc = inverted ? "/assets/kyrios-logo-white.svg" : "/assets/kyrios-logo.svg";
+
   return (
-    // SVG nativo — evita baixar PNG 1000×1000 via otimizador de imagem.
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src="/assets/kyrios-logo.svg"
-      alt="Kyrios Impressão 3D"
-      width={220}
-      height={60}
-      fetchPriority="high"
-      decoding="async"
-      className={className ?? `h-14 w-auto md:h-16 ${inverted ? "brightness-0 invert" : ""}`}
-    />
+    <picture>
+      <source media="(min-width: 768px)" srcSet={desktopSrc} />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/assets/kyrios-logo.png"
+        alt="Kyrios Impressão 3D"
+        width={260}
+        height={70}
+        fetchPriority="high"
+        decoding="async"
+        draggable={false}
+        className={finalClass}
+      />
+    </picture>
   );
 }
 
-type HeaderProps = {
-  /** Mark which nav item should be highlighted as current. Match against `label`. */
-  activeLabel?: string;
-};
-
-export function SiteHeader({ activeLabel = "Início" }: HeaderProps) {
-  return (
-    <header className="container-px sticky top-0 z-30 flex items-center justify-between py-3 backdrop-blur supports-[backdrop-filter]:bg-white/65 md:py-4">
-      <Link href="/" className="flex items-center gap-3">
-        <LogoMark />
-      </Link>
-      <nav className="hidden items-center gap-6 text-sm font-semibold text-ink/90 lg:flex">
-        {navItems.map((item) => {
-          const isActive = item.label === activeLabel;
-          return (
-            <Link
-              key={item.label}
-              href={item.href}
-              className={
-                isActive
-                  ? "border-b border-teal pb-1 text-teal"
-                  : "relative transition hover:text-teal"
-              }
-            >
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
-      <a
-        href={WHATSAPP_URL}
-        className="hidden items-center gap-2 rounded-full bg-tealDeep px-5 py-3 text-sm font-bold text-white shadow-soft transition hover:bg-ink md:flex"
-      >
-        <WhatsAppIcon />
-        Fale no WhatsApp
-      </a>
-    </header>
-  );
-}
+// `SiteHeader` mora em `./SiteHeader.tsx` (client component com menu
+// hambúrguer). Re-exportamos aqui pra manter os imports antigos funcionando.
+export { SiteHeader } from "./SiteHeader";
 
 const footerBenefits: Array<{ icon: LucideIcon; title: string; text: string }> = [
   { icon: PackageCheck, title: "Impressão 3D de qualidade", text: "Materiais resistentes e acabamento premium" },
@@ -121,7 +110,7 @@ export function SiteFooter() {
     <footer id="contato" className="bg-tealDeep text-white">
       <div className="container-px grid gap-10 py-14 md:grid-cols-[1.3fr_1fr_1fr_1.2fr] lg:py-20">
         <div>
-          <LogoMark inverted className="h-16 w-auto md:h-20 brightness-0 invert" />
+          <LogoMark inverted className="h-20 w-auto md:h-24 select-none" />
           <p className="mt-6 max-w-xs text-sm leading-7 text-white/78">
             Impressão 3D de qualidade para transformar ideias em produtos reais.
           </p>

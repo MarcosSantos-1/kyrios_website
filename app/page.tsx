@@ -89,7 +89,7 @@ const faqItems = [
   },
   {
     q: "Qual o tamanho máximo de impressão?",
-    a: "Imprimimos peças de até 30 cm em geral, mas peças maiores podem ser feitas em partes encaixadas. Mande sua ideia que a gente te diz a melhor forma.",
+    a: "Imprimimos peças de até 18 cm em geral, mas peças maiores podem ser feitas em partes encaixadas. Mande sua ideia que a gente te diz a melhor forma.",
   },
   {
     q: "Posso mandar um modelo do MakerWorld pra vocês imprimirem?",
@@ -124,7 +124,7 @@ export default async function Home() {
   const promo = siteConfig.promo?.enabled ? siteConfig.promo : null;
 
   return (
-    <main className="overflow-hidden">
+    <main className="overflow-x-clip">
       <SiteHeader activeLabel="Início" />
 
       {/* PROMO BANNER (admin-controlled) */}
@@ -145,31 +145,9 @@ export default async function Home() {
       {/* HERO */}
       <section id="inicio" className="relative">
         <div className="dot-grid pointer-events-none absolute inset-0 opacity-[0.35] [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]" />
-        <div className="container-px relative grid min-h-0 items-start gap-8 pb-14 pt-1 md:pb-16 lg:grid-cols-[0.92fr_1.08fr] lg:items-center lg:pb-20 lg:pt-4">
+        <div className="container-px relative grid min-h-0 items-start gap-8 pb-14 pt-1 md:pb-16 lg:grid-cols-[1.08fr_0.92fr] lg:items-center lg:pb-20 lg:pt-4">
           <div className="hero-wave pointer-events-none absolute -left-12 -top-12 h-[400px] w-[400px] opacity-30 lg:hidden" />
           <div className="hero-wave pointer-events-none absolute -right-24 -top-24 hidden h-[800px] w-[800px] opacity-40 lg:block" />
-
-          <div className="relative z-10 min-h-[420px] lg:min-h-[780px]">
-            <div className="pointer-events-none absolute -right-10 top-20 h-72 w-72 rounded-full bg-tealBright/15 blur-3xl" />
-            <Image
-              src="/assets/KyriosMainImage.webp"
-              alt="Produtos impressos em 3D da Kyrios"
-              fill
-              priority
-              sizes="(max-width: 1024px) 100vw, 55vw"
-              className="object-contain object-[center_top] lg:object-[right_top]"
-            />
-            <div
-              aria-hidden
-              className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 lg:left-[60%]"
-              style={{
-                width: "72%",
-                height: "48px",
-                background: "radial-gradient(ellipse at center, rgba(18,59,60,0.22) 0%, transparent 72%)",
-                filter: "blur(6px)",
-              }}
-            />
-          </div>
 
           <div className="relative z-10 max-w-2xl">
             <Reveal>
@@ -281,6 +259,35 @@ export default async function Home() {
                 </div>
               </div>
             </Reveal>
+          </div>
+
+          {/* IMAGEM — direita no desktop, abaixo do texto no mobile */}
+          <div className="relative z-10 order-last min-h-[440px] lg:min-h-[780px]">
+            <div className="pointer-events-none absolute -right-10 top-20 h-72 w-72 rounded-full bg-tealBright/15 blur-3xl" />
+            <picture>
+              <source
+                media="(min-width: 1024px)"
+                srcSet="/assets/KyriosMainImage-desktop.webp"
+              />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/assets/KyriosMainImage-mobile.webp"
+                alt="Produtos impressos em 3D da Kyrios"
+                className="absolute inset-0 h-full w-full object-contain object-[center_top] lg:object-[right_top]"
+                fetchPriority="high"
+                decoding="async"
+              />
+            </picture>
+            <div
+              aria-hidden
+              className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 lg:left-[55%]"
+              style={{
+                width: "72%",
+                height: "48px",
+                background: "radial-gradient(ellipse at center, rgba(18,59,60,0.22) 0%, transparent 72%)",
+                filter: "blur(6px)",
+              }}
+            />
           </div>
         </div>
       </section>
@@ -691,17 +698,28 @@ export default async function Home() {
                     </span>
                   </div>
                   <div className="grid grid-cols-3 gap-2 p-4 sm:gap-3 sm:p-5">
-                    {Array.from({ length: 9 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className="group relative aspect-square overflow-hidden rounded-lg bg-gradient-to-br from-mist to-line"
-                      >
-                        <div className="absolute inset-0 grid place-items-center">
-                          <Cuboid className="h-8 w-8 text-tealDeep/40 transition group-hover:rotate-12 group-hover:text-tealDeep/70" style={{ transform: `rotate(${(i * 17) % 30 - 15}deg)` }} />
-                        </div>
-                        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1.5 bg-gradient-to-r from-tealDeep/60 to-amber/60 opacity-70" />
-                      </div>
-                    ))}
+                    {Array.from({ length: 9 }).map((_, i) => {
+                      const n = i + 1;
+                      return (
+                        <a
+                          key={n}
+                          href="https://makerworld.com/en/3d-models"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group relative aspect-square overflow-hidden rounded-lg border border-line/60 bg-mist transition hover:-translate-y-0.5 hover:border-tealDeep/40 hover:shadow-soft"
+                        >
+                          <Image
+                            src={`/grid/${n}.jpeg`}
+                            alt={`Modelo 3D disponível no MakerWorld ${n}`}
+                            fill
+                            sizes="(max-width: 640px) 33vw, 180px"
+                            className="object-cover transition duration-500 group-hover:scale-110"
+                          />
+                          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/40 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+                          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-tealDeep/70 to-amber/70 opacity-80" />
+                        </a>
+                      );
+                    })}
                   </div>
                   <div className="flex items-center justify-between border-t border-line bg-mist/40 px-5 py-3 text-xs text-ink/60">
                     <span>Mais de <strong className="text-ink">100 mil</strong> modelos</span>
@@ -835,7 +853,7 @@ function FeaturedSpread({ product, siteConfig }: { product: Product; siteConfig:
             <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/75">
               {product.category}
             </p>
-            <h3 className="mt-2 font-display text-3xl font-bold leading-[1.05] text-teal drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] md:text-4xl lg:text-5xl">
+            <h3 className="mt-2 font-display text-3xl font-bold leading-[1.05] text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] md:text-4xl lg:text-5xl">
               {product.title}
             </h3>
             <p className="mt-3 max-w-xl rounded-xl bg-ink/40 px-3 py-2 text-sm leading-6 text-white/90 backdrop-blur-sm md:text-base">

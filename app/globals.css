@@ -115,6 +115,15 @@ a {
   animation: emerge-tight 0.28s cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 
+@keyframes slide-in-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.38s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
 .animate-laser {
   animation: laser 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
 }

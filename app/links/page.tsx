@@ -41,9 +41,9 @@ const links: LinkItem[] = [
     color: "bg-[#EE4D2D]",
   },
   {
-    title: "Catálogo no site",
-    subtitle: "Conheça todos os nossos produtos",
-    url: "/produtos",
+    title: "Site oficial Kyrios",
+    subtitle: "Conheça tudo sobre a gente",
+    url: "/",
     icon: <Globe className="h-5 w-5" />,
     color: "bg-ink",
   },
@@ -81,13 +81,17 @@ export default function LinksPage() {
 
       <div className="relative z-10 w-full max-w-[400px] flex flex-col items-center">
         <div className="mb-3 transition-all duration-500 transform hover:scale-105 drop-shadow-2xl">
-          <Image
-            src="/assets/kyrios-logo.png"
+          {/* SVG branco direto, sem filtro brightness/invert (dá manchas). */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/assets/kyrios-logo-white.svg"
             alt="Kyrios Impressão 3D"
             width={320}
             height={100}
-            className="h-24 w-auto md:h-28 brightness-0 invert"
-            priority
+            className="h-28 w-auto md:h-32 select-none"
+            fetchPriority="high"
+            decoding="async"
+            draggable={false}
           />
         </div>  
 
