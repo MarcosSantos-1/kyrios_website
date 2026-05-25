@@ -118,20 +118,16 @@ export default function VitrineConfigPage() {
       ) : (
         <div className="grid gap-6 lg:grid-cols-2">
           <Card title="Vitrine editorial" icon={Sparkles}>
-            <Label>Produto em destaque</Label>
-            <p className="mb-3 text-xs text-ink/55">
-              É o card grande da seção "Vitrine editorial" na home. Se vazio, usamos o primeiro produto marcado como destaque.
-            </p>
-            <select
-              value={config.featuredProductId ?? ""}
-              onChange={(e) => setConfig((c) => ({ ...c, featuredProductId: e.target.value || undefined }))}
-              className="block w-full rounded-lg border border-line bg-white px-3 py-2.5 text-sm focus:border-tealDeep focus:outline-none"
-            >
-              <option value="">— Automático —</option>
-              {products.map((p) => (
-                <option key={p.id} value={p.id}>{p.title}</option>
-              ))}
-            </select>
+            <div className="rounded-xl border border-tealDeep/20 bg-tealDeep/5 p-4 text-sm text-ink/75">
+              <p className="font-display text-base font-bold text-ink">
+                Destaque agora é arrastando.
+              </p>
+              <p className="mt-1.5 text-xs text-ink/65">
+                Em <strong>Produtos</strong>, arraste o produto que você quer
+                como destaque pro topo da lista. Ele vira automaticamente o card
+                grande da Vitrine editorial na home.
+              </p>
+            </div>
 
             <div className="mt-5">
               <Label>Edição (texto da vitrine)</Label>

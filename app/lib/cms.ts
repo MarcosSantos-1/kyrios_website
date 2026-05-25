@@ -175,13 +175,15 @@ export async function getHomeData() {
   return { products, testimonials, siteConfig };
 }
 
-/** Acha o produto destaque da vitrine, respeitando config admin. */
-export function pickFeatured(products: Product[], cfg: SiteConfig): Product {
-  if (cfg.featuredProductId) {
-    const match = products.find((p) => p.id === cfg.featuredProductId);
-    if (match) return match;
-  }
-  return products.find((p) => p.featured) ?? products[0];
+/**
+ * O destaque é simplesmente o primeiro produto da lista — que já vem
+ * ordenada por `order` ascendente do Firestore. O admin controla isso
+ * arrastando produtos no /admin/produtos (drag-and-drop).
+ *
+ * O segundo argumento (`_cfg`) é mantido por compat com chamadas antigas.
+ */
+export function pickFeatured(products: Product[], _cfg?: SiteConfig): Product {
+  return products[0];
 }
 
 /**

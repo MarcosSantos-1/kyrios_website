@@ -173,14 +173,6 @@ export function ProductForm({ mode, initial }: Props) {
               {CATEGORY_OPTIONS.map((c) => <option key={c} value={c} />)}
             </datalist>
           </Field>
-          <Field label="Ordem no catálogo" hint="Menor = aparece primeiro">
-            <input
-              type="number"
-              value={values.order ?? ""}
-              onChange={(e) => set("order", Number(e.target.value))}
-              className="input"
-            />
-          </Field>
           <Field label="Descrição curta (card)">
             <input
               type="text"
@@ -297,21 +289,13 @@ export function ProductForm({ mode, initial }: Props) {
         </div>
       </Section>
 
-      <Section title="Visibilidade">
-        <div className="grid gap-3 md:grid-cols-2">
-          <Toggle
-            label="Destaque editorial"
-            description="Aparece como hero da Vitrine editorial na home."
-            value={!!values.featured}
-            onChange={(v) => set("featured", v)}
-          />
-          <Toggle
-            label="Linha corporativa"
-            description="Marca como produto pra empresas/brindes."
-            value={!!values.corporate}
-            onChange={(v) => set("corporate", v)}
-          />
-        </div>
+      <Section title="Visibilidade" subtitle="O destaque editorial agora é controlado arrastando os produtos na listagem — o primeiro da fila vira destaque automaticamente.">
+        <Toggle
+          label="Linha corporativa"
+          description="Marca como produto pra empresas/brindes."
+          value={!!values.corporate}
+          onChange={(v) => set("corporate", v)}
+        />
       </Section>
 
       <FormFooter
